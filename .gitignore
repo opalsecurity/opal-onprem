@@ -5,6 +5,10 @@
 *.tfstate
 *.tfstate.*
 
+# Don't include lock file for cross-platform use
+# https://stackoverflow.com/a/72146455/1232944
+.terraform.lock.hcl
+
 # Crash log files
 crash.log
 
@@ -27,3 +31,5 @@ override.tf.json
 
 # Include tfplan files to ignore the plan output of command: terraform plan -out=tfplan
 # example: *tfplan*
+
+**/.idea/*

@@ -35,6 +35,7 @@ resource "aws_db_instance" "opal" {
   vpc_security_group_ids = [aws_security_group.rds.id]
   multi_az               = true
   publicly_accessible    = false
+  storage_encrypted      = true
 
   backup_retention_period = 30
   #not for prod - make sure your Opal snapshot is not deleted by accident

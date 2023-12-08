@@ -26,6 +26,7 @@ resource "aws_db_instance" "opal" {
 
   engine            = "postgres"
   allocated_storage = 50
+  storage_type      = "gp3"
   instance_class    = var.db_instance_class
 
   username = "postgres"

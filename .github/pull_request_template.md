@@ -10,7 +10,7 @@
 
 > What is the level of risk to the product with this change? And why? (Low, High)
 
-<!-- High areas of risk would include infrastructure changes, including DB migrations, changing how users get access to resources, potential side effects for no-prem customers, breaking changes to the public API, etc -->
+<!-- High areas of risk would include on-prem customers needing to re-run TF-->
 
 > If "High", what monitoring do we have in place to let us know if something goes wrong?
 

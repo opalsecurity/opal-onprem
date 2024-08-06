@@ -13,12 +13,12 @@ variable "cluster_name" {
 }
 
 variable "cluster_version" {
-  default     = "1.26"
+  default     = "1.29"
   description = "EKS cluster version"
 }
 
 variable "cluster_node_instance_type" {
-  default     = "m5.large"
+  default     = "m6i.large"
   description = "EKS cluster node instance type"
 }
 
@@ -28,6 +28,6 @@ variable "db_identifier" {
 }
 
 variable "db_instance_class" {
-  default     = "db.m5.large"
+  default     = "db.m6i.large"
   description = "DB instance class"
 }

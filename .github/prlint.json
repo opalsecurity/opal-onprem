@@ -1,0 +1,8 @@
+{
+  "title": [
+    {
+      "pattern": "^(\\[OPAL-([1-9][0-9]*)\\]) (.+)",
+      "message": "Your title needs to be prefixed with [OPAL-{id_number}]"
+    }
+  ]
+}

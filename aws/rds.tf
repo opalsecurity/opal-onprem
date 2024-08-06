@@ -25,7 +25,9 @@ resource "aws_db_instance" "opal" {
   identifier = var.db_identifier
 
   engine            = "postgres"
+  engine_version    = "15.6"
   allocated_storage = 50
+  storage_type      = "gp3"
   instance_class    = var.db_instance_class
 
   username = "postgres"
@@ -35,6 +37,7 @@ resource "aws_db_instance" "opal" {
   vpc_security_group_ids = [aws_security_group.rds.id]
   multi_az               = true
   publicly_accessible    = false
+  storage_encrypted      = true
 
   backup_retention_period = 30
   #not for prod - make sure your Opal snapshot is not deleted by accident

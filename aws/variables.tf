@@ -18,7 +18,7 @@ variable "cluster_version" {
 }
 
 variable "cluster_node_instance_type" {
-  default     = "m6i.large"
+  default     = "m6i.xlarge"
   description = "EKS cluster node instance type"
 }
 

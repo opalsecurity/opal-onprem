@@ -60,8 +60,10 @@ module "eks" {
   cluster_version = var.cluster_version
 
   #networking
-  subnet_ids = module.vpc.private_subnets
-  vpc_id     = module.vpc.vpc_id
+  subnet_ids                      = module.vpc.private_subnets
+  vpc_id                          = module.vpc.vpc_id
+  cluster_endpoint_public_access  = false
+  cluster_endpoint_private_access = true
 
   //enable logs and OIDC
   cluster_enabled_log_types = ["audit", "api", "authenticator"]

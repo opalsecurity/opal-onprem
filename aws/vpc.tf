@@ -18,4 +18,10 @@ module "vpc" {
     "kubernetes.io/cluster/${module.eks.cluster_name}" = "owned"
   }
 
+  private_subnet_tags = {
+    "kubernetes.io/role/internal-elb"                  = 1
+    "kubernetes.io/cluster/${module.eks.cluster_name}" = "owned"
+  }
+
+
 }

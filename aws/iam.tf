@@ -14,12 +14,12 @@ data "aws_iam_policy_document" "opal_assume_role_policy" {
 
 #admin
 resource "aws_iam_role" "eks_cluster_admin" {
-  name                 = "OpalEKSClusterAdmin"
+  name                 = "${var.cluster_name}-OpalEKSClusterAdmin"
   assume_role_policy   = data.aws_iam_policy_document.opal_assume_role_policy.json
   max_session_duration = 1 * 60 * 60
 }
 resource "aws_iam_policy" "eks_cluster_admin" {
-  name   = "OpalEKSClusterAdminAccess"
+  name   = "${var.cluster_name}-OpalEKSClusterAdminAccess"
   policy = <<EOF
 {
   "Version": "2012-10-17",

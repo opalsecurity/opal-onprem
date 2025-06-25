@@ -100,6 +100,18 @@ module "eks" {
     # the VPC CNI fails to assign IPs and nodes cannot join the new cluster
     # see https://github.com/aws/containers-roadmap/issues/1666 for more context
     iam_role_attach_cni_policy = true
+
+    # Creates persistent volumes
+    block_device_mappings = {
+      "xvda" = {
+        device_name = "/dev/xvda"
+
+        ebs = {
+          volume_size = 60
+          volume_type = "gp3"
+        }
+      }
+    }
   }
 
   #allow node to node communication and rds access

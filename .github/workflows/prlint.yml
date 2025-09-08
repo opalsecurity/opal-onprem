@@ -1,0 +1,15 @@
+name: PR Lint
+on:
+  pull_request:
+    types: ['opened', 'edited', 'reopened', 'synchronize']
+    branches-ignore:
+        - "**/graphite-base/**"
+
+jobs:
+  prlint-reloaded:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: maor-rozenfeld/prlint-reloaded@b8556615cddc303d112042c52c15c56fb7b829ee
+        with:
+          title-regex: "^(\\[((OPAL|DF|COR|SI|LPPM|IT|DOC)-([1-9][0-9]*)|Graphite MQ)\\]) (.+)"
+          error-message: "Title needs to be prefixed with a linear ticket [{team_id}-{ticket_number}]"

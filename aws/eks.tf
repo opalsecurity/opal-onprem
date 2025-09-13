@@ -157,6 +157,20 @@ module "eks" {
       max_size     = 3
       desired_size = 3
     }
+    # To deploy this change, a blue-green deployment is necessary.
+    # First, add the new `worker-green` node group, with a tf plan + apply.
+    # After confirming success, remove the previous `worker` node group,
+    # with a tf plan + apply.
+    worker-green = {
+      name         = "opal-worker-greenn"
+      max_size     = 3
+      desired_size = 2
+      subnet_ids = concat([
+        for subnet_id in module.vpc.private_subnets : subnet_id if subnet_id != "<private_subnet_id_to_exclude>"
+      ], [
+        for subnet_id in module.vpc.public_subnets : subnet_id if subnet_id != "<public_subnet_id_to_exclude>"
+      ])
+    }
   }
 
   # show example auth config map

@@ -31,3 +31,8 @@ variable "db_instance_class" {
   default     = "db.m6i.large"
   description = "DB instance class"
 }
+
+variable "exports_bucket_name" {
+  default     = ""
+  description = "S3 bucket name for Opal async exports (must be globally unique). Defaults to <cluster_name>-exports."
+}

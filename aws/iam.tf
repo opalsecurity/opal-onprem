@@ -42,7 +42,8 @@ resource "aws_iam_policy" "eks_cluster_admin" {
         "arn:aws:eks:${var.region}:${data.aws_caller_identity.current.account_id}:addon/${module.eks.cluster_name}/*/*",
         "arn:aws:eks:${var.region}:${data.aws_caller_identity.current.account_id}:identityproviderconfig/${module.eks.cluster_name}/*/*/*",
         "arn:aws:eks:${var.region}:${data.aws_caller_identity.current.account_id}:cluster/${module.eks.cluster_name}",
-        "arn:aws:eks:${var.region}:${data.aws_caller_identity.current.account_id}:nodegroup/${module.eks.cluster_name}/*/*"
+        "arn:aws:eks:${var.region}:${data.aws_caller_identity.current.account_id}:nodegroup/${module.eks.cluster_name}/*/*",
+        "arn:aws:eks:${var.region}:${data.aws_caller_identity.current.account_id}:access-entry/${module.eks.cluster_name}/*/*/*"
       ]
     }
   ]

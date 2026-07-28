@@ -33,3 +33,6 @@ override.tf.json
 # example: *tfplan*
 
 **/.idea/*
+
+# macOS
+.DS_Store

@@ -9,12 +9,12 @@ output "rds_reader_hostname" {
 }
 
 output "rds_port" {
-  description = "RDS instance port"
+  description = "Aurora cluster port"
   value       = aws_rds_cluster.opal.port
 }
 
 output "rds_username" {
-  description = "RDS instance root username"
+  description = "Aurora cluster master username"
   value       = aws_rds_cluster.opal.master_username
 }
 

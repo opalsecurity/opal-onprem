@@ -73,8 +73,28 @@ manifests and rationale.
   These are suggested changes for review, not a tested migration plan.
 - **RDS -> Aurora is a data migration, not a version bump.** Terraform will
   want to destroy the `aws_db_instance` and create a new `aws_rds_cluster`.
-  Plan an actual migration (snapshot restore into Aurora, or logical
-  dump/restore) and cut Opal over during a maintenance window.
+  Staged migration procedure (per platform-engineering review):
+  1. Before touching this branch, take a manual snapshot of the existing
+     `aws_db_instance` (`aws rds create-db-snapshot ...`) as a safety net
+     that doesn't depend on Terraform's own state.
+  2. On the branch still targeting the old `aws_db_instance`, make sure a
+     stray `apply` can't silently destroy it during the migration window:
+     ```hcl
+     resource "aws_db_instance" "opal" {
+       # ...
+       skip_final_snapshot       = false
+       final_snapshot_identifier = "opal-final-${formatdate("YYYYMMDD-hhmmss", timestamp())}"
+
+       lifecycle {
+         prevent_destroy = true
+       }
+     }
+     ```
+  3. Provision the new `aws_rds_cluster` (this branch) alongside the old
+     instance, restore data into it (snapshot restore or logical
+     dump/restore), and validate against Opal during a maintenance window.
+  4. Only after cutover is confirmed, remove the `prevent_destroy` lifecycle
+     block and the old `aws_db_instance` resource in a follow-up apply.
 - **VPC module bumped 3.2.0 -> ~> 6.0** (not one of the 7 items, but the old
   version isn't validated against AWS provider 6.x and would likely break
   planning). This also jumps several majors - diff the plan carefully.

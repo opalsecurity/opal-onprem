@@ -1,8 +1,13 @@
 data "aws_availability_zones" "available" {}
 
 module "vpc" {
-  source  = "terraform-aws-modules/vpc/aws"
-  version = "3.2.0"
+  source = "terraform-aws-modules/vpc/aws"
+  # was pinned to 3.2.0 (2021-era), which predates and is not validated
+  # against aws provider 6.x. Bumping alongside the provider upgrade since
+  # v3 will very likely fail plan/apply against provider >= 6. This module
+  # jumps 3 major versions (3 -> 6) - diff the plan carefully before
+  # applying, per the module's upgrade guides on the registry.
+  version = "~> 6.0"
 
   name                 = var.vpc_name
   cidr                 = "10.0.0.0/16"

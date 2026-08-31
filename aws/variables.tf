@@ -2,14 +2,9 @@ variable "region" {
   description = "AWS region"
 }
 
-variable "vpc_name" {
-  default     = "opal-vpc"
-  description = "VPC name"
-}
-
-variable "cluster_name" {
-  default     = "opal-cluster"
-  description = "EKS cluster name"
+variable "name_prefix" {
+  default = "opal"
+  description = "Name prefix applied to all resources created by this"
 }
 
 variable "cluster_version" {
@@ -20,11 +15,6 @@ variable "cluster_version" {
 variable "cluster_node_instance_type" {
   default     = "m6i.xlarge"
   description = "EKS cluster node instance type"
-}
-
-variable "db_identifier" {
-  default     = "opal"
-  description = "DB identifier"
 }
 
 variable "db_instance_class" {

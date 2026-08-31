@@ -59,7 +59,7 @@ module "alb_controller_irsa_role" {
 module "eks" {
   source          = "terraform-aws-modules/eks/aws"
   version         = "18.31.0"
-  cluster_name    = var.cluster_name
+  cluster_name    = "${var.name_prefix}-cluster"
   cluster_version = var.cluster_version
 
   #networking
@@ -156,7 +156,7 @@ module "eks" {
   # default to three worker nodes across AZs - two nodes is okay based on t-shirt sizing.
   eks_managed_node_groups = {
     worker = {
-      name         = "opal-worker"
+      name         = "${var.name_prefix}-worker"
       max_size     = 4
       desired_size = 4
     }

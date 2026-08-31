@@ -4,7 +4,7 @@ resource "random_password" "password" {
 }
 
 resource "aws_security_group" "rds" {
-  name   = "${var.db_identifier}-db"
+  name   = "${var.name_prefix}-db-sec-group"
   vpc_id = module.vpc.vpc_id
 
   ingress {
@@ -16,13 +16,13 @@ resource "aws_security_group" "rds" {
 }
 
 resource "aws_db_subnet_group" "opal" {
-  name       = var.db_identifier
+  name       = "${var.name_prefix}-db-subnet-group"
   subnet_ids = module.vpc.private_subnets
 }
 
 resource "aws_db_instance" "opal" {
   db_name    = "opal"
-  identifier = var.db_identifier
+  identifier = "${var.name_prefix}-db"
 
   engine            = "postgres"
   engine_version    = "15.19"

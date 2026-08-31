@@ -3,7 +3,7 @@ variable "region" {
 }
 
 variable "name_prefix" {
-  default = "opal"
+  default     = "opal"
   description = "Name prefix applied to all resources created by this"
 }
 

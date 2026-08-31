@@ -8,7 +8,7 @@ data "aws_eks_cluster_auth" "cluster" {
 
 # irsa - vpc cni
 module "vpc_cni_irsa_role" {
-  source = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
   version = "5.60.0"
 
   role_name = "${module.eks.cluster_name}-vpc-cni"
@@ -26,7 +26,7 @@ module "vpc_cni_irsa_role" {
 
 # irsa - csi ebs storage
 module "ebs_csi_irsa_role" {
-  source = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
   version = "5.60.0"
 
   role_name             = "${module.eks.cluster_name}-ebs-csi"
@@ -42,7 +42,7 @@ module "ebs_csi_irsa_role" {
 
 # irsa - alb controller
 module "alb_controller_irsa_role" {
-  source = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
   version = "5.60.0"
 
   role_name                              = "${module.eks.cluster_name}-alb-controller"

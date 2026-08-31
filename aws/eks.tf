@@ -1,14 +1,11 @@
-data "aws_eks_cluster" "cluster" {
-  name = module.eks.cluster_id
-}
-
 data "aws_eks_cluster_auth" "cluster" {
-  name = module.eks.cluster_id
+  name = module.eks.cluster_name
 }
 
 # irsa - vpc cni
 module "vpc_cni_irsa_role" {
-  source = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  version = "5.60.0"
 
   role_name = "${module.eks.cluster_name}-vpc-cni"
 
@@ -25,7 +22,8 @@ module "vpc_cni_irsa_role" {
 
 # irsa - csi ebs storage
 module "ebs_csi_irsa_role" {
-  source = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  version = "5.60.0"
 
   role_name             = "${module.eks.cluster_name}-ebs-csi"
   attach_ebs_csi_policy = true
@@ -40,7 +38,8 @@ module "ebs_csi_irsa_role" {
 
 # irsa - alb controller
 module "alb_controller_irsa_role" {
-  source = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  version = "5.60.0"
 
   role_name                              = "${module.eks.cluster_name}-alb-controller"
   attach_load_balancer_controller_policy = true
@@ -55,8 +54,8 @@ module "alb_controller_irsa_role" {
 
 module "eks" {
   source          = "terraform-aws-modules/eks/aws"
-  version         = "18.31.0"
-  cluster_name    = var.cluster_name
+  version         = "20.36.0"
+  cluster_name    = "${var.name_prefix}-cluster"
   cluster_version = var.cluster_version
 
   #networking
@@ -90,10 +89,10 @@ module "eks" {
   # make worker nodes work with SSM
   eks_managed_node_group_defaults = {
     instance_types = [var.cluster_node_instance_type]
-    iam_role_additional_policies = [
-      "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore",
-      "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
-    ]
+    iam_role_additional_policies = {
+      AmazonSSMManagedInstanceCore = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+      CloudWatchAgentServerPolicy  = "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
+    }
     # We are using the IRSA created above for CNI permissions
     # However, we have to provision a new cluster with the policy attached FIRST
     # before we can disable. Without this initial policy,
@@ -150,24 +149,25 @@ module "eks" {
     }
   }
 
-  # default to three worker nodes across AZs - two nodes is okay based on t-shirt sizing.
   eks_managed_node_groups = {
     worker = {
-      name         = "opal-worker"
+      name         = "${var.name_prefix}-worker"
       max_size     = 3
       desired_size = 3
     }
   }
 
-  # show example auth config map
-  manage_aws_auth_configmap = true
-  aws_auth_roles = [
-    {
-      rolearn  = aws_iam_role.eks_cluster_admin.arn
-      username = aws_iam_role.eks_cluster_admin.name
-      groups   = ["system:masters"]
+  access_entries = {
+    cluster_admin = {
+      principal_arn = aws_iam_role.eks_cluster_admin.arn
+      policy_associations = {
+        admin = {
+          policy_arn   = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+          access_scope = { type = "cluster" }
+        }
+      }
     }
-  ]
+  }
 }
 
 #alb controller

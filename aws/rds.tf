@@ -4,7 +4,7 @@ resource "random_password" "password" {
 }
 
 resource "aws_security_group" "rds" {
-  name   = "${var.db_identifier}-db"
+  name   = "${var.name_prefix}-db-sec-group"
   vpc_id = module.vpc.vpc_id
 
   ingress {
@@ -16,17 +16,17 @@ resource "aws_security_group" "rds" {
 }
 
 resource "aws_db_subnet_group" "opal" {
-  name       = var.db_identifier
+  name       = "${var.name_prefix}-db-subnet-group"
   subnet_ids = module.vpc.private_subnets
 }
 
 resource "aws_db_instance" "opal" {
   db_name    = "opal"
-  identifier = var.db_identifier
+  identifier = "${var.name_prefix}-db"
 
   engine            = "postgres"
-  engine_version    = "15.10"
-  allocated_storage = 50
+  engine_version    = "15.19"
+  allocated_storage = 100
   storage_type      = "gp3"
   instance_class    = var.db_instance_class
 
@@ -39,7 +39,9 @@ resource "aws_db_instance" "opal" {
   publicly_accessible    = false
   storage_encrypted      = true
 
-  backup_retention_period = 30
-  #not for prod - make sure your Opal snapshot is not deleted by accident
-  skip_final_snapshot = true
+  backup_retention_period   = 30
+  skip_final_snapshot       = false
+  final_snapshot_identifier = "${var.name_prefix}-db-final-snapshot"
+
+  apply_immediately = true
 }

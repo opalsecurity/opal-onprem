@@ -1,9 +1,5 @@
-data "aws_eks_cluster" "cluster" {
-  name = module.eks.cluster_id
-}
-
 data "aws_eks_cluster_auth" "cluster" {
-  name = module.eks.cluster_id
+  name = module.eks.cluster_name
 }
 
 # irsa - vpc cni
@@ -93,10 +89,10 @@ module "eks" {
   # make worker nodes work with SSM
   eks_managed_node_group_defaults = {
     instance_types = [var.cluster_node_instance_type]
-    iam_role_additional_policies = [
-      "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore",
-      "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
-    ]
+    iam_role_additional_policies = {
+      AmazonSSMManagedInstanceCore = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+      CloudWatchAgentServerPolicy  = "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
+    }
     # We are using the IRSA created above for CNI permissions
     # However, we have to provision a new cluster with the policy attached FIRST
     # before we can disable. Without this initial policy,
@@ -183,22 +179,20 @@ resource "helm_release" "alb_controller" {
 
   namespace = "kube-system"
 
-  set = [
-    {
-      name  = "clusterName"
-      value = module.eks.cluster_name
-    },
-    {
-      name  = "serviceAccount.create"
-      value = true
-    },
-    {
-      name  = "serviceAccount.name"
-      value = "aws-load-balancer-controller "
-    },
-    {
-      name  = "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
-      value = module.alb_controller_irsa_role.iam_role_arn
-    }
-  ]
+  set {
+    name  = "clusterName"
+    value = module.eks.cluster_name
+  }
+  set {
+    name  = "serviceAccount.create"
+    value = true
+  }
+  set {
+    name  = "serviceAccount.name"
+    value = "aws-load-balancer-controller "
+  }
+  set {
+    name  = "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
+    value = module.alb_controller_irsa_role.iam_role_arn
+  }
 }

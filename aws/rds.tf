@@ -40,8 +40,7 @@ resource "aws_db_instance" "opal" {
   storage_encrypted      = true
 
   backup_retention_period = 30
-  #not for prod - make sure your Opal snapshot is not deleted by accident
-  skip_final_snapshot = true
+  skip_final_snapshot = false
 
   apply_immediately = true
 }

@@ -11,5 +11,5 @@ jobs:
     steps:
       - uses: maor-rozenfeld/prlint-reloaded@b8556615cddc303d112042c52c15c56fb7b829ee
         with:
-          title-regex: "^(\\[((OPAL|DF|COR|SI|LPPM|IT|DOC)-([1-9][0-9]*)|Graphite MQ)\\]) (.+)"
+          title-regex: "^(\\[((OPAL|DF|COR|SI|LPPM|IT|DOC|SEC|ENG|PROD|PLAT|EPRD)-([1-9][0-9]*)|Graphite MQ)\\]) (.+)"
           error-message: "Title needs to be prefixed with a linear ticket [{team_id}-{ticket_number}]"

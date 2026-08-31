@@ -41,6 +41,7 @@ resource "aws_db_instance" "opal" {
 
   backup_retention_period = 30
   skip_final_snapshot     = false
+  final_snapshot_identifier = "${var.name_prefix}-db-final-snapshot"
 
   apply_immediately = true
 }

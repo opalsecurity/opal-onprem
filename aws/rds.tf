@@ -25,8 +25,8 @@ resource "aws_db_instance" "opal" {
   identifier = var.db_identifier
 
   engine            = "postgres"
-  engine_version    = "15.10"
-  allocated_storage = 50
+  engine_version    = "15.19"
+  allocated_storage = 100
   storage_type      = "gp3"
   instance_class    = var.db_instance_class
 
@@ -42,4 +42,6 @@ resource "aws_db_instance" "opal" {
   backup_retention_period = 30
   #not for prod - make sure your Opal snapshot is not deleted by accident
   skip_final_snapshot = true
+
+  apply_immediately = true
 }

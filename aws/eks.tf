@@ -9,6 +9,7 @@ data "aws_eks_cluster_auth" "cluster" {
 # irsa - vpc cni
 module "vpc_cni_irsa_role" {
   source = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  version = "5.60.0"
 
   role_name = "${module.eks.cluster_name}-vpc-cni"
 
@@ -26,6 +27,7 @@ module "vpc_cni_irsa_role" {
 # irsa - csi ebs storage
 module "ebs_csi_irsa_role" {
   source = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  version = "5.60.0"
 
   role_name             = "${module.eks.cluster_name}-ebs-csi"
   attach_ebs_csi_policy = true
@@ -41,6 +43,7 @@ module "ebs_csi_irsa_role" {
 # irsa - alb controller
 module "alb_controller_irsa_role" {
   source = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  version = "5.60.0"
 
   role_name                              = "${module.eks.cluster_name}-alb-controller"
   attach_load_balancer_controller_policy = true
@@ -154,8 +157,8 @@ module "eks" {
   eks_managed_node_groups = {
     worker = {
       name         = "opal-worker"
-      max_size     = 3
-      desired_size = 3
+      max_size     = 4
+      desired_size = 4
     }
   }
 
@@ -179,20 +182,22 @@ resource "helm_release" "alb_controller" {
 
   namespace = "kube-system"
 
-  set {
-    name  = "clusterName"
-    value = module.eks.cluster_name
-  }
-  set {
-    name  = "serviceAccount.create"
-    value = true
-  }
-  set {
-    name  = "serviceAccount.name"
-    value = "aws-load-balancer-controller "
-  }
-  set {
-    name  = "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
-    value = module.alb_controller_irsa_role.iam_role_arn
-  }
+  set = [
+    {
+      name  = "clusterName"
+      value = module.eks.cluster_name
+    },
+    {
+      name  = "serviceAccount.create"
+      value = true
+    },
+    {
+      name  = "serviceAccount.name"
+      value = "aws-load-balancer-controller "
+    },
+    {
+      name  = "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
+      value = module.alb_controller_irsa_role.iam_role_arn
+    }
+  ]
 }
